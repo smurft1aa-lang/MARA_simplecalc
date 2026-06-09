@@ -40,8 +40,31 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <!-- Layout Container -->
+    <div class="layout-container">
+      
+      <!-- Left Sidebar -->
+      <aside class="sidebar-left">
+        <h3 class="sidebar-title">Alternative for Insufficient Allocation:</h3>
+        <ul class="sidebar-links">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <div>
+              <a href="https://tmspp.mara.gov.my/" target="_blank">Request additional allocation from MARA through TMS system</a>
+              <span class="sidebar-note">– subject to MARA's approval</span>
+            </div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <div>
+              <a href="https://www.kwsp.gov.my/ms/ahli/fasa-kehidupan/pengeluaran-pendidikan" target="_blank">EPF education withdrawal (Account 2)</a>
+            </div>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
       <!-- Stepper -->
       <div class="stepper" id="stepper">
         <div class="step active" data-step="1">
@@ -195,7 +218,7 @@
           <div class="allocation-status hidden" id="allocationStatus"></div>
 
           <!-- Payment received input -->
-          <div class="form-group hidden" id="paymentGroup">
+          <div class="form-group" id="paymentGroup">
             <label for="paymentReceived">Number of Payments Currently Received (from MARA e-Baki statement)</label>
             <input type="number" id="paymentReceived" placeholder="e.g. 5" step="1" min="0" />
           </div>
@@ -294,6 +317,8 @@
         </div>
       </div>
     </div>
+      </main>
+    </div> <!-- /layout-container -->
 
     <!-- Footer -->
     <footer class="utp-footer">

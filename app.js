@@ -296,7 +296,6 @@ function validateAllocation() {
 
   if (isNaN(val) || val <= 0 || !startVal || !endVal) {
     allocationStatus.classList.add("hidden");
-    paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
     return;
   }
@@ -307,52 +306,49 @@ function validateAllocation() {
   if (end <= start) {
     allocationStatus.innerHTML = '<div class="notice notice-error">End date must be after start date.</div>';
     allocationStatus.classList.remove("hidden");
-    paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
     return;
   }
 
-  // Calculate approximate months and round to nearest semester (6 months)
+  // Calculate approximate months and round to nearest payment period (6 months = 1 payment)
   const exactMonths = (end - start) / (1000 * 60 * 60 * 24 * 30.436875);
-  const semesters = Math.round(exactMonths / 6);
+  const expectedPayments = Math.round(exactMonths / 6);
 
-  if (semesters <= 0) {
+  if (expectedPayments <= 0) {
     allocationStatus.innerHTML = '<div class="notice notice-error">Duration is too short to calculate payments.</div>';
     allocationStatus.classList.remove("hidden");
-    paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
     return;
   }
 
   state.yd = val;
-  state.maraDuration = semesters;
+  state.maraDuration = expectedPayments;
 
   const prog = getSelectedProgramme();
   if (!prog) return;
 
   allocationStatus.classList.remove("hidden");
 
-  const totalEstimatedAllocation = val * semesters;
-  const expectedTuitionForDuration = prog.amountPerPayment * semesters;
+  const totalEstimatedAllocation = val * expectedPayments;
+  const expectedTuitionForDuration = prog.amountPerPayment * expectedPayments;
 
   const isYdPass = val >= prog.amountPerPayment;
-  const isTotalPass = totalEstimatedAllocation >= expectedTuitionForDuration;
+  const isTotalPass = totalEstimatedAllocation >= prog.totalFee;
 
   if (isYdPass && isTotalPass) {
     allocationStatus.innerHTML =
       '<div class="notice notice-good">' +
       "<strong>MARA allocation is fully satisfied.</strong> " +
       "Your Yearly Disbursement (" + formatRM(val) + ") covers the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "and your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") covers the Expected Tuition Fee for your offer duration (" + formatRM(expectedTuitionForDuration) + ")." +
+      "and your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") covers the full Total Tuition Fee (" + formatRM(prog.totalFee) + ")." +
       "</div>";
-    paymentGroup.classList.remove("hidden");
     validatePaymentInput();
   } else if (isYdPass && !isTotalPass) {
     allocationStatus.innerHTML =
       '<div class="notice notice-warn">' +
       "<strong>Partial coverage warning.</strong> " +
       "Your Yearly Disbursement (" + formatRM(val) + ") is enough to cover the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the Expected Tuition Fee for your offer duration (" + formatRM(expectedTuitionForDuration) + ").<br><br>" +
+      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the full Total Tuition Fee (" + formatRM(prog.totalFee) + ").<br><br>" +
       "<em>Note: If you received this scholarship mid-programme (e.g., Year 2), this is expected. Otherwise, please verify your MARA offer letter duration.</em>" +
       "</div>";
     paymentGroup.classList.remove("hidden");
@@ -364,7 +360,6 @@ function validateAllocation() {
       "Your Yearly Disbursement (" + formatRM(val) + ") is less than the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "). " +
       "Please verify your MARA offer letter." +
       "</div>";
-    paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
   }
 }
@@ -476,7 +471,6 @@ btnBack4.addEventListener("click", () => {
 
   ydInput.value = "";
   allocationStatus.classList.add("hidden");
-  paymentGroup.classList.add("hidden");
   paymentReceived.value = "";
   btnNext3.disabled = true;
 
