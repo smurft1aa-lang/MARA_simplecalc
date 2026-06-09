@@ -434,11 +434,18 @@ function calculateResults() {
     balance + " payment" + (balance !== 1 ? "s" : "");
 
   const outOfPocketRow = document.getElementById("outOfPocketRow");
+  outOfPocketRow.style.display = "flex";
+  document.getElementById("resOutOfPocket").textContent = formatRM(outOfPocketTotal);
   if (outOfPocketTotal > 0) {
-    outOfPocketRow.style.display = "flex";
-    document.getElementById("resOutOfPocket").textContent = formatRM(outOfPocketTotal);
+    outOfPocketRow.style.backgroundColor = "#fff0f0";
+    outOfPocketRow.style.borderColor = "#ffcccc";
+    outOfPocketRow.children[0].style.color = "#d93025";
+    document.getElementById("resOutOfPocket").style.color = "#d93025";
   } else {
-    outOfPocketRow.style.display = "none";
+    outOfPocketRow.style.backgroundColor = "var(--success-bg)";
+    outOfPocketRow.style.borderColor = "var(--success-border)";
+    outOfPocketRow.children[0].style.color = "var(--success)";
+    document.getElementById("resOutOfPocket").style.color = "var(--success)";
   }
 
   // Scenario box
