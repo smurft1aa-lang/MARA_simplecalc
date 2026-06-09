@@ -141,6 +141,7 @@ let state = {
   programme: null,
   maraType: null,
   yd: null,
+  maraDuration: null,
   paymentsReceived: null,
 };
 
@@ -156,6 +157,7 @@ const btnBack3 = document.getElementById("btn-back-3");
 const btnBack4 = document.getElementById("btn-back-4");
 const hostelNotice = document.getElementById("hostelNotice");
 const ydInput = document.getElementById("ydInput");
+const maraDurationInput = document.getElementById("maraDurationInput");
 const allocationStatus = document.getElementById("allocationStatus");
 const paymentGroup = document.getElementById("paymentGroup");
 const paymentReceived = document.getElementById("paymentReceived");
@@ -286,9 +288,19 @@ btnNext2.addEventListener("click", () => {
 btnBack2.addEventListener("click", () => goToStep(1));
 
 // ---------- Step 3: YD Input ----------
-ydInput.addEventListener("input", () => {
+function validateAllocation() {
   const val = parseFloat(ydInput.value);
-  if (isNaN(val) || val <= 0) {
+  const semestersStr = maraDurationInput.value;
+
+  if (isNaN(val) || val <= 0 || !semestersStr) {
+    allocationStatus.classList.add("hidden");
+    paymentGroup.classList.add("hidden");
+    btnNext3.disabled = true;
+    return;
+  }
+
+  const semesters = parseInt(semestersStr, 10);
+  if (isNaN(semesters) || semesters <= 0) {
     allocationStatus.classList.add("hidden");
     paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
@@ -296,27 +308,25 @@ ydInput.addEventListener("input", () => {
   }
 
   state.yd = val;
+  state.maraDuration = semesters;
+
   const prog = getSelectedProgramme();
   if (!prog) return;
 
   allocationStatus.classList.remove("hidden");
 
-  let years = 4;
-  if (prog.duration === "3 year 4 months") {
-    years = 3.5;
-  }
-  
-  const totalEstimatedAllocation = val * 2 * years;
+  const totalEstimatedAllocation = val * semesters;
+  const expectedTuitionForDuration = prog.amountPerPayment * semesters;
 
   const isYdPass = val >= prog.amountPerPayment;
-  const isTotalPass = totalEstimatedAllocation >= prog.totalFee;
+  const isTotalPass = totalEstimatedAllocation >= expectedTuitionForDuration;
 
   if (isYdPass && isTotalPass) {
     allocationStatus.innerHTML =
       '<div class="notice notice-good">' +
       "<strong>MARA allocation is fully satisfied.</strong> " +
       "Your Yearly Disbursement (" + formatRM(val) + ") covers the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "and your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") covers the Total Tuition Fee (" + formatRM(prog.totalFee) + ")." +
+      "and your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") covers the Expected Tuition Fee for your offer duration (" + formatRM(expectedTuitionForDuration) + ")." +
       "</div>";
     paymentGroup.classList.remove("hidden");
     validatePaymentInput();
@@ -325,7 +335,7 @@ ydInput.addEventListener("input", () => {
       '<div class="notice notice-warn">' +
       "<strong>Partial coverage warning.</strong> " +
       "Your Yearly Disbursement (" + formatRM(val) + ") is enough to cover the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the full Total Tuition Fee (" + formatRM(prog.totalFee) + ").<br><br>" +
+      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the Expected Tuition Fee for your offer duration (" + formatRM(expectedTuitionForDuration) + ").<br><br>" +
       "<em>Note: If you received this scholarship mid-programme (e.g., Year 2), this is expected. Otherwise, please verify your MARA offer letter duration.</em>" +
       "</div>";
     paymentGroup.classList.remove("hidden");
@@ -340,7 +350,10 @@ ydInput.addEventListener("input", () => {
     paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
   }
-});
+}
+
+ydInput.addEventListener("input", validateAllocation);
+maraDurationInput.addEventListener("input", validateAllocation);
 
 function validatePaymentInput() {
   const pr = parseInt(paymentReceived.value, 10);
@@ -368,9 +381,9 @@ function calculateResults() {
   const prog = getSelectedProgramme();
   if (!prog) return;
 
-  const pinjaman = prog.totalFee;
   const yd = state.yd;
-  const dlyd = Math.round(pinjaman / yd);
+  const dlyd = state.maraDuration || Math.round(prog.totalFee / yd);
+  const pinjaman = yd * dlyd; // Total sponsored amount by MARA
   const received = state.paymentsReceived;
   const balance = Math.max(0, dlyd - received);
   const hostelCovered = HOSTEL_COVERED.includes(state.maraType);
