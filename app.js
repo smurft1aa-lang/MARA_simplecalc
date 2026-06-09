@@ -414,7 +414,17 @@ function calculateResults() {
   document.getElementById("resHostel").textContent = hostelCovered
     ? "Covered"
     : "Not covered";
-  document.getElementById("resTuition").textContent = formatRM(pinjaman);
+  document.getElementById("resProgrammeFee").textContent = formatRM(prog.totalFee);
+  
+  const resTuitionEl = document.getElementById("resTuition");
+  resTuitionEl.textContent = formatRM(pinjaman);
+  if (pinjaman >= prog.totalFee) {
+    resTuitionEl.style.color = "var(--success)";
+    resTuitionEl.style.fontWeight = "bold";
+  } else {
+    resTuitionEl.style.color = "var(--error)";
+    resTuitionEl.style.fontWeight = "bold";
+  }
   document.getElementById("resYD").textContent = formatRM(yd);
   document.getElementById("resDLYD").textContent =
     dlyd + " payment" + (dlyd !== 1 ? "s" : "");
