@@ -301,14 +301,25 @@ ydInput.addEventListener("input", () => {
 
   allocationStatus.classList.remove("hidden");
 
-  if (val >= prog.amountPerPayment) {
+  let years = 4;
+  if (prog.duration === "3 year 4 months") {
+    years = 3.5;
+  }
+  
+  const totalEstimatedAllocation = val * 2 * years;
+
+  if (totalEstimatedAllocation >= prog.totalFee) {
     allocationStatus.innerHTML =
       '<div class="notice notice-good">' +
       "<strong>MARA allocation is satisfied.</strong> " +
-      "Your Yearly Disbursement (" +
+      "Your total estimated allocation (" +
       formatRM(val) +
-      ") meets or exceeds the Amount Per Payment (" +
-      formatRM(prog.amountPerPayment) +
+      " × 2 × " +
+      years +
+      " years = " +
+      formatRM(totalEstimatedAllocation) +
+      ") covers the Total Tuition Fee (" +
+      formatRM(prog.totalFee) +
       ")." +
       "</div>";
     paymentGroup.classList.remove("hidden");
@@ -317,10 +328,14 @@ ydInput.addEventListener("input", () => {
     allocationStatus.innerHTML =
       '<div class="notice notice-error">' +
       "<strong>MARA allocation not enough.</strong> " +
-      "Your Yearly Disbursement (" +
+      "Your total estimated allocation (" +
       formatRM(val) +
-      ") is less than the Amount Per Payment (" +
-      formatRM(prog.amountPerPayment) +
+      " × 2 × " +
+      years +
+      " years = " +
+      formatRM(totalEstimatedAllocation) +
+      ") is less than the Total Tuition Fee (" +
+      formatRM(prog.totalFee) +
       "). Please verify your MARA offer letter." +
       "</div>";
     paymentGroup.classList.add("hidden");
