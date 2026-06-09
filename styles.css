@@ -1144,7 +1144,8 @@ input[type="number"] {
   .navbar,
   .utp-footer,
   .stepper,
-  .card-footer {
+  .card-footer,
+  .sidebar-left {
     display: none !important;
   }
 
