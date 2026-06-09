@@ -357,10 +357,11 @@ function validateAllocation() {
     allocationStatus.innerHTML =
       '<div class="notice notice-error">' +
       "<strong>MARA allocation not enough.</strong> " +
-      "Your Yearly Disbursement (" + formatRM(val) + ") is less than the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "). " +
-      "Please verify your MARA offer letter." +
+      "Your Yuran Pengajian (" + formatRM(val) + ") is less than the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "). " +
+      "Please refer to the alternatives on the left sidebar to cover the shortfall." +
       "</div>";
-    btnNext3.disabled = true;
+    paymentGroup.classList.remove("hidden");
+    validatePaymentInput();
   }
 }
 
@@ -401,6 +402,9 @@ function calculateResults() {
   const balance = Math.max(0, dlyd - received);
   const hostelCovered = HOSTEL_COVERED.includes(state.maraType);
 
+  // Calculate Out of Pocket if MARA doesn't cover the full Amount Per Payment
+  const outOfPocketTotal = Math.max(0, (prog.amountPerPayment - yd) * dlyd);
+
   // Fill results
   document.getElementById("resProgramme").textContent = prog.name;
   document.getElementById("resYear").textContent =
@@ -418,6 +422,14 @@ function calculateResults() {
     received + " payment" + (received !== 1 ? "s" : "");
   document.getElementById("resBalance").textContent =
     balance + " payment" + (balance !== 1 ? "s" : "");
+
+  const outOfPocketRow = document.getElementById("outOfPocketRow");
+  if (outOfPocketTotal > 0) {
+    outOfPocketRow.style.display = "flex";
+    document.getElementById("resOutOfPocket").textContent = formatRM(outOfPocketTotal);
+  } else {
+    outOfPocketRow.style.display = "none";
+  }
 
   // Scenario box
   const scenarioBox = document.getElementById("scenarioBox");
@@ -528,3 +540,28 @@ document.querySelectorAll(".info-tab").forEach((tab) => {
     populateInfoTable(infoYear);
   });
 });
+
+// ---------- Lampiran A Overlay ----------
+const btnLampiranInfo = document.getElementById("btnLampiranInfo");
+const lampiranOverlay = document.getElementById("lampiranOverlay");
+const btnCloseLampiran = document.getElementById("btnCloseLampiran");
+
+if (btnLampiranInfo) {
+  btnLampiranInfo.addEventListener("click", () => {
+    lampiranOverlay.classList.remove("hidden");
+  });
+}
+
+if (btnCloseLampiran) {
+  btnCloseLampiran.addEventListener("click", () => {
+    lampiranOverlay.classList.add("hidden");
+  });
+}
+
+if (lampiranOverlay) {
+  lampiranOverlay.addEventListener("click", (e) => {
+    if (e.target === lampiranOverlay) {
+      lampiranOverlay.classList.add("hidden");
+    }
+  });
+}

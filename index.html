@@ -201,8 +201,13 @@
         </div>
         <div class="card-body">
           <div class="form-group">
-            <label for="ydInput">Yearly Disbursement (YD) Amount (RM)</label>
-            <input type="number" id="ydInput" placeholder="e.g. 10000" step="0.01" min="0" />
+            <label for="ydInput" style="display:flex; align-items:center;">
+              Yuran Pengajian (YD) please refer to Lampiran A
+              <button type="button" class="btn-icon" id="btnLampiranInfo" aria-label="View Lampiran A" style="background:none; border:none; color:var(--utp-blue); cursor:pointer; margin-left:6px; display:flex;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </button>
+            </label>
+            <input type="number" id="ydInput" placeholder="e.g. 11551.25" min="0" step="0.01">
           </div>
 
           <div class="form-group">
@@ -274,6 +279,10 @@
               <span class="result-label">Balance Payments Remaining</span>
               <span class="result-value" id="resBalance">—</span>
             </div>
+            <div class="result-item result-highlight" id="outOfPocketRow" style="display: none; background-color: #fff0f0; border-color: #ffcccc;">
+              <span class="result-label" style="color: #d93025;">Remaining Balance to Pay to UTP (Out of Pocket)</span>
+              <span class="result-value" id="resOutOfPocket" style="color: #d93025;">—</span>
+            </div>
           </div>
 
           <!-- Scenario message -->
@@ -314,6 +323,22 @@
             </thead>
             <tbody id="infoTableBody"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lampiran A Info Overlay -->
+    <div class="info-overlay hidden" id="lampiranOverlay">
+      <div class="info-panel" style="max-width: 600px;">
+        <div class="info-panel-header">
+          <h2>Lampiran A Reference</h2>
+          <button class="btn-close" id="btnCloseLampiran" type="button">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div style="padding: 20px; text-align: center;">
+          <img src="lampiran_a_placeholder.png" alt="Lampiran A Placeholder" style="max-width: 100%; border: 1px solid #e8edf2; border-radius: 8px;">
+          <p style="margin-top: 10px; font-size: 0.9rem; color: var(--gray-600);">Look for "Yuran" under PINJAMAN (RM).</p>
         </div>
       </div>
     </div>
