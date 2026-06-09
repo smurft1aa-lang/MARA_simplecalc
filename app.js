@@ -402,8 +402,8 @@ function calculateResults() {
   const balance = Math.max(0, dlyd - received);
   const hostelCovered = HOSTEL_COVERED.includes(state.maraType);
 
-  // Calculate Out of Pocket if MARA doesn't cover the full Amount Per Payment
-  const outOfPocketTotal = Math.max(0, (prog.amountPerPayment - yd) * dlyd);
+  // Calculate Out of Pocket: Full tuition fee minus what MARA sponsors
+  const outOfPocketTotal = Math.max(0, prog.totalFee - pinjaman);
 
   // Fill results
   document.getElementById("resProgramme").textContent = prog.name;
