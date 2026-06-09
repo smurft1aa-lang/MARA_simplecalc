@@ -308,19 +308,25 @@ ydInput.addEventListener("input", () => {
   
   const totalEstimatedAllocation = val * 2 * years;
 
-  if (totalEstimatedAllocation >= prog.totalFee) {
+  const isYdPass = val >= prog.amountPerPayment;
+  const isTotalPass = totalEstimatedAllocation >= prog.totalFee;
+
+  if (isYdPass && isTotalPass) {
     allocationStatus.innerHTML =
       '<div class="notice notice-good">' +
-      "<strong>MARA allocation is satisfied.</strong> " +
-      "Your total estimated allocation (" +
-      formatRM(val) +
-      " × 2 × " +
-      years +
-      " years = " +
-      formatRM(totalEstimatedAllocation) +
-      ") covers the Total Tuition Fee (" +
-      formatRM(prog.totalFee) +
-      ")." +
+      "<strong>MARA allocation is fully satisfied.</strong> " +
+      "Your Yearly Disbursement (" + formatRM(val) + ") covers the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
+      "and your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") covers the Total Tuition Fee (" + formatRM(prog.totalFee) + ")." +
+      "</div>";
+    paymentGroup.classList.remove("hidden");
+    validatePaymentInput();
+  } else if (isYdPass && !isTotalPass) {
+    allocationStatus.innerHTML =
+      '<div class="notice notice-warn">' +
+      "<strong>Partial coverage warning.</strong> " +
+      "Your Yearly Disbursement (" + formatRM(val) + ") is enough for the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
+      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the Total Tuition Fee (" + formatRM(prog.totalFee) + "). " +
+      "Please verify your MARA offer letter duration." +
       "</div>";
     paymentGroup.classList.remove("hidden");
     validatePaymentInput();
@@ -328,15 +334,8 @@ ydInput.addEventListener("input", () => {
     allocationStatus.innerHTML =
       '<div class="notice notice-error">' +
       "<strong>MARA allocation not enough.</strong> " +
-      "Your total estimated allocation (" +
-      formatRM(val) +
-      " × 2 × " +
-      years +
-      " years = " +
-      formatRM(totalEstimatedAllocation) +
-      ") is less than the Total Tuition Fee (" +
-      formatRM(prog.totalFee) +
-      "). Please verify your MARA offer letter." +
+      "Your Yearly Disbursement (" + formatRM(val) + ") is less than the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "). " +
+      "Please verify your MARA offer letter." +
       "</div>";
     paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
