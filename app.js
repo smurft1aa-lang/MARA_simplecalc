@@ -324,9 +324,9 @@ ydInput.addEventListener("input", () => {
     allocationStatus.innerHTML =
       '<div class="notice notice-warn">' +
       "<strong>Partial coverage warning.</strong> " +
-      "Your Yearly Disbursement (" + formatRM(val) + ") is enough for the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the Total Tuition Fee (" + formatRM(prog.totalFee) + "). " +
-      "Please verify your MARA offer letter duration." +
+      "Your Yearly Disbursement (" + formatRM(val) + ") is enough to cover the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
+      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the full Total Tuition Fee (" + formatRM(prog.totalFee) + ").<br><br>" +
+      "<em>Note: If you received this scholarship mid-programme (e.g., Year 2), this is expected. Otherwise, please verify your MARA offer letter duration.</em>" +
       "</div>";
     paymentGroup.classList.remove("hidden");
     validatePaymentInput();
