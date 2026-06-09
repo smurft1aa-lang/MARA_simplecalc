@@ -125,12 +125,8 @@ const PROGRAMMES = [
 
 // MARA type labels
 const MARA_LABELS = {
-  YTP_DIRECT: "MARA YTP (Direct Programme to UTP)",
-  KMKN: "MARA KMKN-UTP",
+  YTP_DIRECT: "MARA YTP",
   EDU: "MARA EDU",
-  YTP_REROUTE: "MARA YTP (Reroute from overseas / other programmes)",
-  IESP: "MARA IESP",
-  TESP: "MARA TESP",
 };
 
 const HOSTEL_COVERED = ["YTP_DIRECT", "KMKN"];
@@ -396,8 +392,13 @@ function calculateResults() {
   if (!prog) return;
 
   const yd = state.yd;
-  const dlyd = state.maraDuration || Math.round(prog.totalFee / yd);
-  const pinjaman = yd * dlyd; // Total sponsored amount by MARA
+  
+  // DLYD strictly follows the programme's full default duration.
+  const progDLYD = prog.duration.includes("4 year") ? 8 : (prog.duration.includes("3 year") ? 7 : Math.round(prog.totalFee / yd));
+  const dlyd = progDLYD;
+
+  const maraPayments = state.maraDuration || dlyd;
+  const pinjaman = yd * maraPayments; // Total sponsored amount by MARA
   const received = state.paymentsReceived;
   const balance = Math.max(0, dlyd - received);
   const hostelCovered = HOSTEL_COVERED.includes(state.maraType);
