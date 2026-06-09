@@ -23,7 +23,7 @@ const PROGRAMMES = [
     payment2023: 9663.57,
   },
   {
-    no: 4,
+    no: 3,
     name: "Computer Science",
     duration: "3 year 4 months",
     fee2022: 65808,
@@ -32,7 +32,7 @@ const PROGRAMMES = [
     payment2023: 10186.86,
   },
   {
-    no: 5,
+    no: 4,
     name: "Information Systems",
     duration: "3 year 4 months",
     fee2022: 65808,
@@ -41,7 +41,7 @@ const PROGRAMMES = [
     payment2023: 10186.86,
   },
   {
-    no: 6,
+    no: 5,
     name: "Information Technology",
     duration: "3 year 4 months",
     fee2022: 65808,
@@ -50,7 +50,7 @@ const PROGRAMMES = [
     payment2023: 10186.86,
   },
   {
-    no: 7,
+    no: 6,
     name: "Petroleum Geoscience",
     duration: "3 year 4 months",
     fee2022: 72000,
@@ -59,7 +59,7 @@ const PROGRAMMES = [
     payment2023: 9913.25,
   },
   {
-    no: 8,
+    no: 7,
     name: "Chemical Engineering",
     duration: "4 years",
     fee2022: 82980,
@@ -68,7 +68,7 @@ const PROGRAMMES = [
     payment2023: 11551.25,
   },
   {
-    no: 9,
+    no: 8,
     name: "Civil Engineering",
     duration: "4 years",
     fee2022: 82980,
@@ -77,7 +77,7 @@ const PROGRAMMES = [
     payment2023: 11551.25,
   },
   {
-    no: 10,
+    no: 9,
     name: "Computer Engineering",
     duration: "4 years",
     fee2022: 84000,
@@ -86,7 +86,7 @@ const PROGRAMMES = [
     payment2023: 11551.25,
   },
   {
-    no: 11,
+    no: 10,
     name: "Electrical & Electronics Engineering",
     duration: "4 years",
     fee2022: 82980,
@@ -95,7 +95,7 @@ const PROGRAMMES = [
     payment2023: 11551.25,
   },
   {
-    no: 12,
+    no: 11,
     name: "Materials Engineering",
     duration: "4 years",
     fee2022: 82980,
@@ -104,7 +104,7 @@ const PROGRAMMES = [
     payment2023: 11552.13,
   },
   {
-    no: 13,
+    no: 12,
     name: "Mechanical Engineering",
     duration: "4 years",
     fee2022: 82980,
@@ -113,7 +113,7 @@ const PROGRAMMES = [
     payment2023: 11551.25,
   },
   {
-    no: 14,
+    no: 13,
     name: "Petroleum Engineering",
     duration: "4 years",
     fee2022: 82980,
