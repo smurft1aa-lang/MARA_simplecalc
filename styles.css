@@ -991,7 +991,7 @@ input[type="number"] {
 .utp-footer {
   background: var(--utp-dark);
   color: #fff;
-  padding: 60px 48px 32px;
+  padding: 32px 48px 24px;
 }
 
 .utp-footer a {
@@ -1000,7 +1000,7 @@ input[type="number"] {
 
 .footer-grid {
   max-width: 800px;
-  margin: 0 auto 40px;
+  margin: 0 auto 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
