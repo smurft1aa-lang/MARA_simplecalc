@@ -157,7 +157,8 @@ const btnBack3 = document.getElementById("btn-back-3");
 const btnBack4 = document.getElementById("btn-back-4");
 const hostelNotice = document.getElementById("hostelNotice");
 const ydInput = document.getElementById("ydInput");
-const maraDurationInput = document.getElementById("maraDurationInput");
+const maraStartDate = document.getElementById("maraStartDate");
+const maraEndDate = document.getElementById("maraEndDate");
 const allocationStatus = document.getElementById("allocationStatus");
 const paymentGroup = document.getElementById("paymentGroup");
 const paymentReceived = document.getElementById("paymentReceived");
@@ -290,18 +291,34 @@ btnBack2.addEventListener("click", () => goToStep(1));
 // ---------- Step 3: YD Input ----------
 function validateAllocation() {
   const val = parseFloat(ydInput.value);
-  const semestersStr = maraDurationInput.value;
+  const startVal = maraStartDate.value;
+  const endVal = maraEndDate.value;
 
-  if (isNaN(val) || val <= 0 || !semestersStr) {
+  if (isNaN(val) || val <= 0 || !startVal || !endVal) {
     allocationStatus.classList.add("hidden");
     paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
     return;
   }
 
-  const semesters = parseInt(semestersStr, 10);
-  if (isNaN(semesters) || semesters <= 0) {
-    allocationStatus.classList.add("hidden");
+  const start = new Date(startVal);
+  const end = new Date(endVal);
+
+  if (end <= start) {
+    allocationStatus.innerHTML = '<div class="notice notice-error">End date must be after start date.</div>';
+    allocationStatus.classList.remove("hidden");
+    paymentGroup.classList.add("hidden");
+    btnNext3.disabled = true;
+    return;
+  }
+
+  // Calculate approximate months and round to nearest semester (6 months)
+  const exactMonths = (end - start) / (1000 * 60 * 60 * 24 * 30.436875);
+  const semesters = Math.round(exactMonths / 6);
+
+  if (semesters <= 0) {
+    allocationStatus.innerHTML = '<div class="notice notice-error">Duration is too short to calculate payments.</div>';
+    allocationStatus.classList.remove("hidden");
     paymentGroup.classList.add("hidden");
     btnNext3.disabled = true;
     return;
@@ -353,7 +370,8 @@ function validateAllocation() {
 }
 
 ydInput.addEventListener("input", validateAllocation);
-maraDurationInput.addEventListener("input", validateAllocation);
+maraStartDate.addEventListener("change", validateAllocation);
+maraEndDate.addEventListener("change", validateAllocation);
 
 function validatePaymentInput() {
   const pr = parseInt(paymentReceived.value, 10);

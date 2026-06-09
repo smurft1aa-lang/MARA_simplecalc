@@ -183,8 +183,12 @@
           </div>
 
           <div class="form-group">
-            <label for="maraDurationInput">MARA Offer Duration (Number of Semesters)</label>
-            <input type="number" id="maraDurationInput" placeholder="e.g. 8 (for 4 years)" step="1" min="1" />
+            <label>MARA Offer Duration / Tempoh Pinjaman (Start & End Date)</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="date" id="maraStartDate" title="Start Date" />
+              <input type="date" id="maraEndDate" title="End Date" />
+            </div>
+            <small style="display:block; margin-top:5px; color:#555;">Refer to your offer letter e.g. [01 MAY 2022 - 30 APR 2026]</small>
           </div>
 
           <!-- Allocation status -->
