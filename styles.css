@@ -1232,9 +1232,9 @@ input[type="number"] {
     order: -1;
   }
 
-  .sidebar-title,
-  .sidebar-left > p {
-    display: none; /* Hide text to keep it looking like a pure nav bar */
+  .sidebar-left:has(.radio-group) .sidebar-title,
+  .sidebar-left:has(.radio-group) > p {
+    display: none; /* Hide text to keep it looking like a pure nav bar only when selection is active */
   }
 
   .scroll-list-box {

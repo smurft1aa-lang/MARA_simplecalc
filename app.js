@@ -496,6 +496,25 @@ function calculateResults() {
       '<a href="https://www.kwsp.gov.my/ms/ahli/fasa-kehidupan/pengeluaran-pendidikan" target="_blank">EPF education withdrawal (Account 2)</a>' +
       '</div>' +
       '</li>' +
+      '<li>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '<div>' +
+      '<span>Seek assistance from family/friends</span>' +
+      '</div>' +
+      '</li>' +
+      '<li>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '<div>' +
+      '<span>Financial assistantship from Zakat Negeri/Baitulmal/Yayasan Negeri</span>' +
+      '</div>' +
+      '</li>' +
+      '<li>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '<div>' +
+      '<a href="https://www.utp.edu.my/sites/Publishing/PublishingContent/Zakat/2025/YUTP%20%26%20TAZU%20FINANCIAL%20ASSISTANCE.pdf" target="_blank">YUTP Bursary/TAZU Ghorimin (B40 category)</a>' +
+      '<span class="sidebar-note">– Need to meet their requirement. Amount covered is not full and depends on per capita income. Advise to apply on the last semester or after all payment MARA had been received by the students.</span>' +
+      '</div>' +
+      '</li>' +
       '</ul>';
   }
 
