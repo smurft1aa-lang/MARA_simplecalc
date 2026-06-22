@@ -314,12 +314,11 @@ function validateAllocation() {
     return;
   }
 
-  // Calculate approximate months and round to nearest payment period (6 months = 1 payment)
-  const exactMonths = (end - start) / (1000 * 60 * 60 * 24 * 30.436875);
-  const expectedPayments = Math.round(exactMonths / 6);
+  // Calculate expected payments directly from Lampiran A tuition fee division
+  const expectedPayments = Math.round(totalTuition / val);
 
   if (expectedPayments <= 0) {
-    allocationStatus.innerHTML = '<div class="notice notice-error">Duration is too short to calculate payments.</div>';
+    allocationStatus.innerHTML = '<div class="notice notice-error">Tuition fee and payment amounts are invalid for calculation.</div>';
     allocationStatus.classList.remove("hidden");
     btnNext3.disabled = true;
     return;
@@ -448,7 +447,7 @@ function calculateResults() {
     resTuitionEl.style.fontWeight = "bold";
   }
   document.getElementById("resYD").textContent = formatRM(yd);
-  document.getElementById("resMaraDuration").textContent = maraPayments + " payment" + (maraPayments !== 1 ? "s" : "") + " (from offer dates)";
+  document.getElementById("resMaraDuration").textContent = maraPayments + " payment" + (maraPayments !== 1 ? "s" : "");
   document.getElementById("resDLYD").textContent =
     dlyd + " payment" + (dlyd !== 1 ? "s" : "");
   document.getElementById("resReceived").textContent =
