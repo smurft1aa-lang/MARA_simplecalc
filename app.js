@@ -283,19 +283,31 @@ document.querySelectorAll('input[name="maraScholarship"]').forEach((radio) => {
 function validateAllocation() {
   const totalTuition = parseFloat(totalTuitionInput.value);
   const val = parseFloat(ydInput.value);
-  const startVal = maraStartDate.value;
-  const endVal = maraEndDate.value;
+  const startStr = maraStartDate.value;
+  const endStr = maraEndDate.value;
+  if (
+    totalTuitionInput.validity.badInput ||
+    ydInput.validity.badInput ||
+    maraStartDate.validity.badInput ||
+    maraEndDate.validity.badInput
+  ) {
+    allocationStatus.innerHTML = '<div class="notice notice-error">One or more of your inputs are invalid (e.g., a date that does not exist like April 31st).</div>';
+    allocationStatus.classList.remove("hidden");
+    paymentGroup.classList.add("hidden");
+    btnNext3.disabled = true;
+    return;
+  }
 
-  if (isNaN(totalTuition) || totalTuition <= 0 || isNaN(val) || val <= 0 || !startVal || !endVal) {
+  if (isNaN(totalTuition) || totalTuition <= 0 || isNaN(val) || val <= 0 || !startStr || !endStr) {
     allocationStatus.classList.add("hidden");
     btnNext3.disabled = true;
     return;
   }
 
-  const start = new Date(startVal);
-  const end = new Date(endVal);
+  const start = new Date(startStr);
+  const end = new Date(endStr);
 
-  if (end <= start) {
+  if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
     allocationStatus.innerHTML = '<div class="notice notice-error">End date must be after start date.</div>';
     allocationStatus.classList.remove("hidden");
     btnNext3.disabled = true;
@@ -404,7 +416,7 @@ function calculateResults() {
   const yd = state.yd;
   const userTotalTuition = state.totalTuitionFee || prog.totalFee;
   const maraPayments = state.maraDuration;
-  
+
   // DLYD = payments based on MARA offer duration (consistent source of truth)
   const dlyd = maraPayments;
   const pinjaman = yd * maraPayments; // Total sponsored amount by MARA
@@ -425,7 +437,7 @@ function calculateResults() {
     ? "Covered"
     : "Not covered";
   document.getElementById("resProgrammeFee").textContent = formatRM(prog.totalFee);
-  
+
   const resTuitionEl = document.getElementById("resTuition");
   resTuitionEl.textContent = formatRM(pinjaman);
   if (pinjaman >= prog.totalFee) {
@@ -576,18 +588,18 @@ btnBack4.addEventListener("click", () => {
   document.querySelectorAll('input[name="maraScholarship"]').forEach((r) => {
     r.checked = r.value === "YTP_DIRECT";
   });
-  
+
   // Restore sidebar to scholarship selector
   const sidebarLeft = document.querySelector(".sidebar-left");
   sidebarLeft.innerHTML =
     '<h3 class="sidebar-title">Select Your MARA Scholarship Type</h3>' +
-    '<p style="font-size:0.9rem; margin-bottom:15px; color:var(--gray-600);">Choose the MARA scholarship you are enrolled under.</p>' +
+    '<p style="font-size:0.9rem; margin-bottom:15px; color:var(--gray-600);">(Refer in U Campus>>Finance> View Student Statement>Sponsor)</p>' +
     '<div class="scroll-list-box" id="maraListBox" style="max-height: none; background: transparent; padding: 0;">' +
     '<div class="radio-group" id="maraType" style="flex-direction: column;">' +
     '<label class="radio-card">' +
     '<input type="radio" name="maraScholarship" value="YTP_DIRECT" checked />' +
     '<div class="radio-content">' +
-    '<span class="radio-title">MARA YTP (Direct Programme to UTP)</span>' +
+    '<span class="radio-title">MARA YTP</span>' +
     '</div>' +
     '</label>' +
     '<label class="radio-card">' +
