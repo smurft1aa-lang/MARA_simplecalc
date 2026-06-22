@@ -823,15 +823,39 @@ input[type="number"] {
 }
 
 .scenario-settled {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--success);
+}
+
+.scenario-pending {
   background: var(--info-bg);
   border: 1px solid var(--info-border);
   color: var(--info);
 }
 
-.scenario-pending {
+.scenario-warn {
   background: var(--warning-bg);
   border: 1px solid var(--warning-border);
   color: var(--warning);
+}
+
+.scenario-box a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.scenario-box a:hover {
+  opacity: 0.8;
+}
+
+.scenario-box ul {
+  list-style: disc;
+}
+
+.scenario-box li {
+  margin-bottom: 4px;
 }
 
 /* ---------- Info Overlay ---------- */

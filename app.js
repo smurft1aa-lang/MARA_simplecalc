@@ -135,7 +135,8 @@ const HOSTEL_COVERED = ["YTP_DIRECT", "KMKN"];
 let state = {
   yearCategory: null,
   programme: null,
-  maraType: null,
+  maraType: "YTP_DIRECT",
+  totalTuitionFee: null,
   yd: null,
   maraDuration: null,
   paymentsReceived: null,
@@ -146,12 +147,11 @@ const yearSelect = document.getElementById("yearCategory");
 const programmeList = document.getElementById("programmeList");
 const feeSummary = document.getElementById("feeSummary");
 const btnNext1 = document.getElementById("btn-next-1");
-const btnNext2 = document.getElementById("btn-next-2");
-const btnBack2 = document.getElementById("btn-back-2");
 const btnNext3 = document.getElementById("btn-next-3");
 const btnBack3 = document.getElementById("btn-back-3");
 const btnBack4 = document.getElementById("btn-back-4");
 const hostelNotice = document.getElementById("hostelNotice");
+const totalTuitionInput = document.getElementById("totalTuitionInput");
 const ydInput = document.getElementById("ydInput");
 const maraStartDate = document.getElementById("maraStartDate");
 const maraEndDate = document.getElementById("maraEndDate");
@@ -235,7 +235,6 @@ yearSelect.addEventListener("change", () => {
       document.getElementById("sumProgramme").textContent = prog.name;
       document.getElementById("sumDuration").textContent = prog.duration;
       document.getElementById("sumTuition").textContent = formatRM(prog.totalFee);
-      document.getElementById("sumPayment").textContent = formatRM(prog.amountPerPayment);
 
       feeSummary.classList.remove("hidden");
       btnNext1.disabled = false;
@@ -258,8 +257,6 @@ btnNext1.addEventListener("click", () => {
 document.querySelectorAll('input[name="maraScholarship"]').forEach((radio) => {
   radio.addEventListener("change", () => {
     state.maraType = radio.value;
-    btnNext2.disabled = false;
-
     // Show hostel notice
     const covered = HOSTEL_COVERED.includes(state.maraType);
     hostelNotice.classList.remove("hidden", "notice-good", "notice-warn");
@@ -275,22 +272,21 @@ document.querySelectorAll('input[name="maraScholarship"]').forEach((radio) => {
         "<strong>Hostel fees are not covered</strong> under your MARA scholarship. " +
         "You will need to settle hostel accommodation charges separately.";
     }
+
+    if (document.getElementById("panel-3").classList.contains("active")) {
+      calculateResults();
+    }
   });
 });
 
-btnNext2.addEventListener("click", () => {
-  if (state.maraType) goToStep(3);
-});
-
-btnBack2.addEventListener("click", () => goToStep(1));
-
-// ---------- Step 3: YD Input ----------
+// ---------- Step 2: Allocation Input ----------
 function validateAllocation() {
+  const totalTuition = parseFloat(totalTuitionInput.value);
   const val = parseFloat(ydInput.value);
   const startVal = maraStartDate.value;
   const endVal = maraEndDate.value;
 
-  if (isNaN(val) || val <= 0 || !startVal || !endVal) {
+  if (isNaN(totalTuition) || totalTuition <= 0 || isNaN(val) || val <= 0 || !startVal || !endVal) {
     allocationStatus.classList.add("hidden");
     btnNext3.disabled = true;
     return;
@@ -317,6 +313,7 @@ function validateAllocation() {
     return;
   }
 
+  state.totalTuitionFee = totalTuition;
   state.yd = val;
   state.maraDuration = expectedPayments;
 
@@ -325,42 +322,55 @@ function validateAllocation() {
 
   allocationStatus.classList.remove("hidden");
 
+  // Validate: Lampiran A total should not exceed UTP actual fee
+  if (totalTuition > prog.totalFee) {
+    allocationStatus.innerHTML =
+      '<div class="notice notice-error">' +
+      "<strong>Total Tuition Fee exceeds UTP's actual fee.</strong> " +
+      "Your Lampiran A states " + formatRM(totalTuition) + ", but the actual UTP fee for " + prog.name + " is " + formatRM(prog.totalFee) + ". " +
+      "Please verify your Lampiran A or programme selection." +
+      "</div>";
+    btnNext3.disabled = true;
+    return;
+  }
+
   const totalEstimatedAllocation = val * expectedPayments;
-  const expectedTuitionForDuration = prog.amountPerPayment * expectedPayments;
 
-  const isYdPass = val >= prog.amountPerPayment;
-  const isTotalPass = totalEstimatedAllocation >= prog.totalFee;
+  const coversLampiranA = totalEstimatedAllocation >= totalTuition;
+  const coversUTPActual = totalEstimatedAllocation >= prog.totalFee;
+  const isPartial = totalTuition < prog.totalFee;
 
-  if (isYdPass && isTotalPass) {
+  if (coversLampiranA && coversUTPActual) {
+    // Fully covers UTP actual fee
     allocationStatus.innerHTML =
       '<div class="notice notice-good">' +
-      "<strong>MARA allocation is fully satisfied.</strong> " +
-      "Your Yearly Disbursement (" + formatRM(val) + ") covers the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "and your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") covers the full Total Tuition Fee (" + formatRM(prog.totalFee) + ")." +
+      "<strong>MARA allocation is sufficient.</strong> " +
+      "Your Total Tuition Fee and Amount Per Payment fully covers the study fees." +
       "</div>";
     validatePaymentInput();
-  } else if (isYdPass && !isTotalPass) {
+  } else if (coversLampiranA && !coversUTPActual) {
+    // Covers Lampiran A but Lampiran A < UTP actual (partial coverage / half studies)
     allocationStatus.innerHTML =
       '<div class="notice notice-warn">' +
-      "<strong>Partial coverage warning.</strong> " +
-      "Your Yearly Disbursement (" + formatRM(val) + ") is enough to cover the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "), " +
-      "but your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the full Total Tuition Fee (" + formatRM(prog.totalFee) + ").<br><br>" +
-      "<em>Note: If you received this scholarship mid-programme (e.g., Year 2), this is expected. Otherwise, please verify your MARA offer letter duration.</em>" +
+      "<strong>Partial coverage.</strong> " +
+      "Your MARA Lampiran A total (" + formatRM(totalTuition) + ") does not cover the full UTP tuition fee (" + formatRM(prog.totalFee) + ") for " + prog.name + "." +
       "</div>";
     paymentGroup.classList.remove("hidden");
     validatePaymentInput();
   } else {
+    // Doesn't even cover Lampiran A total
     allocationStatus.innerHTML =
       '<div class="notice notice-error">' +
-      "<strong>MARA allocation not enough.</strong> " +
-      "Your Yuran Pengajian (" + formatRM(val) + ") is less than the Amount Per Payment (" + formatRM(prog.amountPerPayment) + "). " +
-      "Please refer to the alternatives on the left sidebar to cover the shortfall." +
+      "<strong>Allocation does not match Lampiran A.</strong> " +
+      "Your total estimated allocation (" + formatRM(totalEstimatedAllocation) + ") is less than the Total Tuition Fee (" + formatRM(totalTuition) + ") from your Lampiran A.<br><br>" +
+      "<em>Please verify your MARA offer letter duration and Amount Per Payment.</em>" +
       "</div>";
     paymentGroup.classList.remove("hidden");
     validatePaymentInput();
   }
 }
 
+totalTuitionInput.addEventListener("input", validateAllocation);
 ydInput.addEventListener("input", validateAllocation);
 maraStartDate.addEventListener("change", validateAllocation);
 maraEndDate.addEventListener("change", validateAllocation);
@@ -380,30 +390,29 @@ paymentReceived.addEventListener("input", validatePaymentInput);
 btnNext3.addEventListener("click", () => {
   if (state.yd > 0 && state.paymentsReceived !== null) {
     calculateResults();
-    goToStep(4);
+    goToStep(3);
   }
 });
 
-btnBack3.addEventListener("click", () => goToStep(2));
+btnBack3.addEventListener("click", () => goToStep(1));
 
-// ---------- Step 4: Results ----------
+// ---------- Step 3: Results ----------
 function calculateResults() {
   const prog = getSelectedProgramme();
   if (!prog) return;
 
   const yd = state.yd;
+  const userTotalTuition = state.totalTuitionFee || prog.totalFee;
+  const maraPayments = state.maraDuration;
   
-  // DLYD strictly follows the programme's full default duration.
-  const progDLYD = prog.duration.includes("4 year") ? 8 : (prog.duration.includes("3 year") ? 7 : Math.round(prog.totalFee / yd));
-  const dlyd = progDLYD;
-
-  const maraPayments = state.maraDuration || dlyd;
+  // DLYD = payments based on MARA offer duration (consistent source of truth)
+  const dlyd = maraPayments;
   const pinjaman = yd * maraPayments; // Total sponsored amount by MARA
   const received = state.paymentsReceived;
   const balance = Math.max(0, dlyd - received);
   const hostelCovered = HOSTEL_COVERED.includes(state.maraType);
 
-  // Calculate Out of Pocket: Full tuition fee minus what MARA sponsors
+  // Out of Pocket: UTP actual fee minus what MARA sponsors
   const outOfPocketTotal = Math.max(0, prog.totalFee - pinjaman);
 
   // Fill results
@@ -427,6 +436,7 @@ function calculateResults() {
     resTuitionEl.style.fontWeight = "bold";
   }
   document.getElementById("resYD").textContent = formatRM(yd);
+  document.getElementById("resMaraDuration").textContent = maraPayments + " payment" + (maraPayments !== 1 ? "s" : "") + " (from offer dates)";
   document.getElementById("resDLYD").textContent =
     dlyd + " payment" + (dlyd !== 1 ? "s" : "");
   document.getElementById("resReceived").textContent =
@@ -451,25 +461,94 @@ function calculateResults() {
 
   // Scenario box
   const scenarioBox = document.getElementById("scenarioBox");
-  if (balance === 0) {
+  const isPartialCoverage = userTotalTuition < prog.totalFee;
+  const coveragePercent = Math.round((userTotalTuition / prog.totalFee) * 100);
+  const uncoveredFee = prog.totalFee - userTotalTuition;
+
+  // Switch sidebar based on out-of-pocket
+  const sidebarLeft = document.querySelector(".sidebar-left");
+  if (outOfPocketTotal > 0) {
+    sidebarLeft.innerHTML =
+      '<h3 class="sidebar-title">Alternative for Insufficient Allocation:</h3>' +
+      '<ul class="sidebar-links">' +
+      '<li>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '<div>' +
+      '<a href="https://tmspp.mara.gov.my/" target="_blank">Request additional allocation from MARA through TMS system</a>' +
+      '<span class="sidebar-note">– subject to MARA\'s approval</span>' +
+      '</div>' +
+      '</li>' +
+      '<li>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+      '<div>' +
+      '<a href="https://www.kwsp.gov.my/ms/ahli/fasa-kehidupan/pengeluaran-pendidikan" target="_blank">EPF education withdrawal (Account 2)</a>' +
+      '</div>' +
+      '</li>' +
+      '</ul>';
+  }
+
+  if (balance === 0 && outOfPocketTotal === 0) {
+    // SCENARIO 1: All payments received, fully covered
     scenarioBox.className = "scenario-box scenario-settled";
     scenarioBox.innerHTML =
-      "<h3>All Payments Received</h3>" +
-      "<p>You have received all " +
-      dlyd +
-      " expected payments from MARA. " +
-      "If there is any outstanding balance in your student statement, " +
-      "you will need to settle it by yourself.</p>";
-  } else {
+      "<h3>✅ Fully Covered — All Payments Received</h3>" +
+      "<p>You have received all " + dlyd + " expected payments from MARA, " +
+      "and your MARA sponsorship fully covers the UTP tuition fee (" + formatRM(prog.totalFee) + "). " +
+      "No out-of-pocket payment is required.</p>";
+
+  } else if (balance === 0 && outOfPocketTotal > 0 && isPartialCoverage) {
+    // SCENARIO 2: All payments received, but MARA only covers part of studies (half coverage)
+    scenarioBox.className = "scenario-box scenario-warn";
+    scenarioBox.innerHTML =
+      "<h3>⚠️ Partial Coverage — All MARA Payments Received</h3>" +
+      "<p>You have received all " + dlyd + " payments from MARA. However, your MARA scholarship " +
+      "only covers <strong>" + coveragePercent + "%</strong> of the programme " +
+      "(Lampiran A: " + formatRM(userTotalTuition) + " out of UTP actual: " + formatRM(prog.totalFee) + ").</p>" +
+      "<p style='margin-top:8px;'>You will need to settle the remaining <strong>" + formatRM(outOfPocketTotal) + "</strong> to UTP by yourself. " +
+      "This is common for students who received MARA sponsorship starting mid-programme.</p>" +
+      "<p style='margin-top:8px;font-size:0.85rem;'><em>Please refer to the sidebar for alternative options to cover the shortfall.</em></p>";
+
+  } else if (balance === 0 && outOfPocketTotal > 0 && !isPartialCoverage) {
+    // SCENARIO 3: All payments received, full coverage on Lampiran A but MARA duration shorter than expected
+    scenarioBox.className = "scenario-box scenario-warn";
+    scenarioBox.innerHTML =
+      "<h3>⚠️ All MARA Payments Received — Outstanding Balance</h3>" +
+      "<p>You have received all " + dlyd + " payments from MARA. " +
+      "However, the total MARA sponsorship (" + formatRM(pinjaman) + ") is less than UTP's actual tuition fee (" + formatRM(prog.totalFee) + ").</p>" +
+      "<p style='margin-top:8px;'>You will need to settle the remaining <strong>" + formatRM(outOfPocketTotal) + "</strong> to UTP.</p>" +
+      "<p style='margin-top:8px;font-size:0.85rem;'><em>Please refer to the sidebar for alternative options to cover the shortfall.</em></p>";
+
+  } else if (balance > 0 && isPartialCoverage) {
+    // SCENARIO 4: Payments still pending, partial/half coverage
     scenarioBox.className = "scenario-box scenario-pending";
     scenarioBox.innerHTML =
-      "<h3>Payments Pending</h3>" +
-      "<p>You have " +
-      balance +
-      " remaining payment" +
-      (balance !== 1 ? "s" : "") +
-      " to receive from MARA. " +
-      "Finance will request the balance of payment from MARA on your behalf.</p>" +
+      "<h3>🔄 Partial Coverage — Payments Pending</h3>" +
+      "<p>Your MARA scholarship covers <strong>" + coveragePercent + "%</strong> of the programme " +
+      "(Lampiran A: " + formatRM(userTotalTuition) + " out of UTP actual: " + formatRM(prog.totalFee) + ").</p>" +
+      "<p style='margin-top:8px;'>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA.</p>" +
+      (outOfPocketTotal > 0 ?
+        "<p style='margin-top:8px;'>After all MARA payments are received, you will still need to settle <strong>" + formatRM(outOfPocketTotal) + "</strong> out-of-pocket to UTP.</p>" +
+        "<p style='margin-top:8px;font-size:0.85rem;'><em>Please refer to the sidebar for alternative options to cover the shortfall.</em></p>" : "") +
+      '<p style="margin-top:8px;font-size:0.82rem;font-style:italic;">*All MARA payments are subject to MARA approval</p>';
+
+  } else if (balance > 0 && outOfPocketTotal === 0) {
+    // SCENARIO 5: Payments pending, but will be fully covered once all received
+    scenarioBox.className = "scenario-box scenario-pending";
+    scenarioBox.innerHTML =
+      "<h3>🔄 Payments Pending — On Track</h3>" +
+      "<p>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA. " +
+      "Once all " + dlyd + " payments are received, your tuition fee will be fully covered.</p>" +
+      '<p style="margin-top:8px;font-size:0.82rem;font-style:italic;">*Subject to MARA approval</p>';
+
+  } else {
+    // SCENARIO 6: Payments pending, with out-of-pocket (full Lampiran A but short duration)
+    scenarioBox.className = "scenario-box scenario-pending";
+    scenarioBox.innerHTML =
+      "<h3>🔄 Payments Pending — Outstanding Balance Expected</h3>" +
+      "<p>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA.</p>" +
+      "<p style='margin-top:8px;'>Even after all MARA payments are received, there will be an outstanding balance of <strong>" + formatRM(outOfPocketTotal) + "</strong> " +
+      "that you will need to settle to UTP.</p>" +
+      "<p style='margin-top:8px;font-size:0.85rem;'><em>Please refer to the sidebar for alternative options to cover the shortfall.</em></p>" +
       '<p style="margin-top:8px;font-size:0.82rem;font-style:italic;">*Subject to MARA approval</p>';
   }
 }
@@ -480,7 +559,8 @@ btnBack4.addEventListener("click", () => {
   state = {
     yearCategory: null,
     programme: null,
-    maraType: null,
+    maraType: "YTP_DIRECT",
+    totalTuitionFee: null,
     yd: null,
     paymentsReceived: null,
   };
@@ -494,12 +574,64 @@ btnBack4.addEventListener("click", () => {
   btnNext1.disabled = true;
 
   document.querySelectorAll('input[name="maraScholarship"]').forEach((r) => {
-    r.checked = false;
+    r.checked = r.value === "YTP_DIRECT";
   });
-  hostelNotice.classList.add("hidden");
-  btnNext2.disabled = true;
+  
+  // Restore sidebar to scholarship selector
+  const sidebarLeft = document.querySelector(".sidebar-left");
+  sidebarLeft.innerHTML =
+    '<h3 class="sidebar-title">Select Your MARA Scholarship Type</h3>' +
+    '<p style="font-size:0.9rem; margin-bottom:15px; color:var(--gray-600);">Choose the MARA scholarship you are enrolled under.</p>' +
+    '<div class="scroll-list-box" id="maraListBox" style="max-height: none; background: transparent; padding: 0;">' +
+    '<div class="radio-group" id="maraType" style="flex-direction: column;">' +
+    '<label class="radio-card">' +
+    '<input type="radio" name="maraScholarship" value="YTP_DIRECT" checked />' +
+    '<div class="radio-content">' +
+    '<span class="radio-title">MARA YTP (Direct Programme to UTP)</span>' +
+    '</div>' +
+    '</label>' +
+    '<label class="radio-card">' +
+    '<input type="radio" name="maraScholarship" value="EDU" />' +
+    '<div class="radio-content">' +
+    '<span class="radio-title">MARA EDU</span>' +
+    '</div>' +
+    '</label>' +
+    '</div>' +
+    '</div>' +
+    '<div class="notice notice-good" id="hostelNotice" style="margin-top: 15px;">' +
+    '<strong>Hostel fees are covered</strong> under your MARA scholarship. Your hostel accommodation charges will be included in the MARA disbursement.' +
+    '</div>';
 
+  // Re-attach radio listeners
+  document.querySelectorAll('input[name="maraScholarship"]').forEach((radio) => {
+    radio.addEventListener("change", () => {
+      state.maraType = radio.value;
+      const covered = HOSTEL_COVERED.includes(state.maraType);
+      const hostelNoticeEl = document.getElementById("hostelNotice");
+      hostelNoticeEl.classList.remove("hidden", "notice-good", "notice-warn");
+      if (covered) {
+        hostelNoticeEl.className = "notice notice-good";
+        hostelNoticeEl.style.marginTop = "15px";
+        hostelNoticeEl.innerHTML =
+          "<strong>Hostel fees are covered</strong> under your MARA scholarship. " +
+          "Your hostel accommodation charges will be included in the MARA disbursement.";
+      } else {
+        hostelNoticeEl.className = "notice notice-warn";
+        hostelNoticeEl.style.marginTop = "15px";
+        hostelNoticeEl.innerHTML =
+          "<strong>Hostel fees are not covered</strong> under your MARA scholarship. " +
+          "You will need to settle hostel accommodation charges separately.";
+      }
+      if (document.getElementById("panel-3").classList.contains("active")) {
+        calculateResults();
+      }
+    });
+  });
+
+  totalTuitionInput.value = "";
   ydInput.value = "";
+  maraStartDate.value = "";
+  maraEndDate.value = "";
   allocationStatus.classList.add("hidden");
   paymentReceived.value = "";
   btnNext3.disabled = true;
@@ -580,6 +712,31 @@ if (lampiranOverlay) {
   lampiranOverlay.addEventListener("click", (e) => {
     if (e.target === lampiranOverlay) {
       lampiranOverlay.classList.add("hidden");
+    }
+  });
+}
+
+// ---------- Lampiran A Total Fee Overlay ----------
+const btnLampiranTotalFeeInfo = document.getElementById("btnLampiranTotalFeeInfo");
+const lampiranTotalFeeOverlay = document.getElementById("lampiranTotalFeeOverlay");
+const btnCloseLampiranTotalFee = document.getElementById("btnCloseLampiranTotalFee");
+
+if (btnLampiranTotalFeeInfo) {
+  btnLampiranTotalFeeInfo.addEventListener("click", () => {
+    lampiranTotalFeeOverlay.classList.remove("hidden");
+  });
+}
+
+if (btnCloseLampiranTotalFee) {
+  btnCloseLampiranTotalFee.addEventListener("click", () => {
+    lampiranTotalFeeOverlay.classList.add("hidden");
+  });
+}
+
+if (lampiranTotalFeeOverlay) {
+  lampiranTotalFeeOverlay.addEventListener("click", (e) => {
+    if (e.target === lampiranTotalFeeOverlay) {
+      lampiranTotalFeeOverlay.classList.add("hidden");
     }
   });
 }
