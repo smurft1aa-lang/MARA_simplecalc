@@ -521,7 +521,7 @@ function calculateResults() {
     // SCENARIO 1: All payments received, fully covered
     scenarioBox.className = "scenario-box scenario-settled";
     scenarioBox.innerHTML =
-      "<h3>✅ Fully Covered — All Payments Received</h3>" +
+      "<h3>Fully Covered — All Payments Received</h3>" +
       "<p>You have received all " + dlyd + " expected payments from MARA, " +
       "and your MARA sponsorship fully covers the UTP tuition fee (" + formatRM(prog.totalFee) + "). " +
       "No out-of-pocket payment is required.</p>";
@@ -530,7 +530,7 @@ function calculateResults() {
     // SCENARIO 2: All payments received, but MARA only covers part of studies (half coverage)
     scenarioBox.className = "scenario-box scenario-warn";
     scenarioBox.innerHTML =
-      "<h3>⚠️ Partial Coverage — All MARA Payments Received</h3>" +
+      "<h3>Partial Coverage — All MARA Payments Received</h3>" +
       "<p>You have received all " + dlyd + " payments from MARA. However, your MARA scholarship " +
       "only covers <strong>" + coveragePercent + "%</strong> of the programme " +
       "(Lampiran A: " + formatRM(userTotalTuition) + " out of UTP actual: " + formatRM(prog.totalFee) + ").</p>" +
@@ -542,7 +542,7 @@ function calculateResults() {
     // SCENARIO 3: All payments received, full coverage on Lampiran A but MARA duration shorter than expected
     scenarioBox.className = "scenario-box scenario-warn";
     scenarioBox.innerHTML =
-      "<h3>⚠️ All MARA Payments Received — Outstanding Balance</h3>" +
+      "<h3>All MARA Payments Received — Outstanding Balance</h3>" +
       "<p>You have received all " + dlyd + " payments from MARA. " +
       "However, the total MARA sponsorship (" + formatRM(pinjaman) + ") is less than UTP's actual tuition fee (" + formatRM(prog.totalFee) + ").</p>" +
       "<p style='margin-top:8px;'>You will need to settle the remaining <strong>" + formatRM(outOfPocketTotal) + "</strong> to UTP.</p>" +
@@ -552,7 +552,7 @@ function calculateResults() {
     // SCENARIO 4: Payments still pending, partial/half coverage
     scenarioBox.className = "scenario-box scenario-pending";
     scenarioBox.innerHTML =
-      "<h3>🔄 Partial Coverage — Payments Pending</h3>" +
+      "<h3>Partial Coverage — Payments Pending</h3>" +
       "<p>Your MARA scholarship covers <strong>" + coveragePercent + "%</strong> of the programme " +
       "(Lampiran A: " + formatRM(userTotalTuition) + " out of UTP actual: " + formatRM(prog.totalFee) + ").</p>" +
       "<p style='margin-top:8px;'>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA.</p>" +
@@ -565,7 +565,7 @@ function calculateResults() {
     // SCENARIO 5: Payments pending, but will be fully covered once all received
     scenarioBox.className = "scenario-box scenario-pending";
     scenarioBox.innerHTML =
-      "<h3>🔄 Payments Pending — On Track</h3>" +
+      "<h3>Payments Pending — On Track</h3>" +
       "<p>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA. " +
       "Once all " + dlyd + " payments are received, your tuition fee will be fully covered.</p>" +
       '<p style="margin-top:8px;font-size:0.82rem;font-style:italic;">*Subject to MARA approval</p>';
@@ -574,7 +574,7 @@ function calculateResults() {
     // SCENARIO 6: Payments pending, with out-of-pocket (full Lampiran A but short duration)
     scenarioBox.className = "scenario-box scenario-pending";
     scenarioBox.innerHTML =
-      "<h3>🔄 Payments Pending — Outstanding Balance Expected</h3>" +
+      "<h3>Payments Pending — Outstanding Balance Expected</h3>" +
       "<p>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA.</p>" +
       "<p style='margin-top:8px;'>Even after all MARA payments are received, there will be an outstanding balance of <strong>" + formatRM(outOfPocketTotal) + "</strong> " +
       "that you will need to settle to UTP.</p>" +
