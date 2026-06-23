@@ -1254,13 +1254,13 @@ input[type="number"] {
     background: transparent;
   }
 
-  /* Segmented Nav Bar for Mobile */
+  /* Segmented Nav Bar for Mobile - Changed to wrap or column to prevent cutoff */
   .radio-group {
-    flex-direction: row !important;
-    background: #e8edf2;
-    border-radius: var(--radius-md);
-    padding: 4px;
-    gap: 0;
+    flex-direction: column !important;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    gap: 8px;
   }
 
   .radio-card {
@@ -1274,12 +1274,14 @@ input[type="number"] {
 
   .radio-content {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    text-align: center;
-    padding: 10px 4px;
+    text-align: left;
+    padding: 12px 16px;
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
   }
 
   .radio-title {
@@ -1326,9 +1328,9 @@ input[type="number"] {
   }
 
   .radio-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
 
   .result-item {
@@ -1345,6 +1347,21 @@ input[type="number"] {
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
+  }
+
+  /* Global fixes for cutoff text on mobile */
+  body,
+  .main-content,
+  .sidebar-left {
+    overflow-x: hidden;
+  }
+
+  .scenario-box,
+  .result-item,
+  .sidebar-links,
+  .notice {
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .utp-footer {
