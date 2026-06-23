@@ -69,9 +69,9 @@
 
       <!-- Left Sidebar -->
       <aside class="sidebar-left">
-        <h3 class="sidebar-title">Select Your MARA Scholarship Type</h3>
-        <p style="font-size:0.9rem; margin-bottom:15px; color:var(--gray-600);">(Refer in U Campus&gt;&gt;Finance&gt;
-          View Student Statement&gt;Sponsor)</p>
+        <h3 class="sidebar-title">Select your MARA Sponsorship Type</h3>
+        <p style="font-size:0.75rem; margin-bottom:15px; color:var(--gray-600);">(Refer in U Campus &gt; Finance &gt;
+          View Student Statement &gt; Sponsor)</p>
         <div class="scroll-list-box" id="maraListBox" style="max-height: none; background: transparent; padding: 0;">
           <div class="radio-group" id="maraType" style="flex-direction: column;">
             <label class="radio-card">
@@ -90,8 +90,9 @@
         </div>
         <!-- Hostel notification -->
         <div class="notice notice-good" id="hostelNotice" style="margin-top: 15px;">
-          <strong>Hostel fees are covered</strong> under your MARA scholarship. Your hostel accommodation charges will
-          be included in the MARA disbursement.
+          <strong>Hostel fees are covered by UTP</strong>
+          for a standard twin-sharing room during the standard duration
+          of your programme
         </div>
       </aside>
 
@@ -111,7 +112,7 @@
           <div class="step-line"></div>
           <div class="step" data-step="3">
             <span class="step-number">3</span>
-            <span class="step-label">Results</span>
+            <span class="step-label">Sumamry</span>
           </div>
         </div>
 
@@ -119,7 +120,7 @@
         <section class="card step-panel active" id="panel-1">
           <div class="card-header">
             <h2>Select Your Year and Programme</h2>
-            <p class="card-desc">Choose your Year Student Enter UTP and programme to view tuition fee details.</p>
+            <p class="card-desc">Choose year student enter UTP and programme to view tuition fee details.</p>
           </div>
           <div class="card-body">
             <div class="form-group">
@@ -215,7 +216,8 @@
 
             <!-- Payment received input -->
             <div class="form-group" id="paymentGroup">
-              <label for="paymentReceived">Number of Payments Currently Received (refer MARA e-Baki statement)</label>
+              <label for="paymentReceived">Number of payments received from MARA to date (Refer MARA e-Baki
+                statement)</label>
               <input type="number" id="paymentReceived" placeholder="e.g. 5" step="1" min="0" />
             </div>
           </div>
@@ -225,11 +227,11 @@
           </div>
         </section>
 
-        <!-- Step 3: Results -->
+        <!-- Step 3: Summary -->
         <section class="card step-panel" id="panel-3">
           <div class="card-header">
-            <h2>Calculation Results</h2>
-            <p class="card-desc">Below is a summary of your MARA scholarship payment status.</p>
+            <h2>Summary</h2>
+            <p class="card-desc">Please find the details of your MARA sponsorship status below.</p>
           </div>
           <div class="card-body">
             <!-- Summary table -->
@@ -243,7 +245,7 @@
                 <span class="result-value" id="resYear">—</span>
               </div>
               <div class="result-item">
-                <span class="result-label">Scholarship Type</span>
+                <span class="result-label">Sponsorship Type</span>
                 <span class="result-value" id="resScholarship">—</span>
               </div>
               <div class="result-item">
@@ -263,25 +265,20 @@
                 <span class="result-value" id="resYD">—</span>
               </div>
               <div class="result-item">
-                <span class="result-label">MARA Offer Duration</span>
+                <span class="result-label">Total Scheduled Payments</span>
                 <span class="result-value" id="resMaraDuration">—</span>
-              </div>
-              <div class="result-item result-highlight">
-                <span class="result-label">Total Payments Expected (DLYD)</span>
-                <span class="result-value" id="resDLYD">—</span>
               </div>
               <div class="result-item">
                 <span class="result-label">Payments Received</span>
                 <span class="result-value" id="resReceived">—</span>
               </div>
               <div class="result-item result-highlight">
-                <span class="result-label">Balance Payments Remaining</span>
+                <span class="result-label">Remaining Payments</span>
                 <span class="result-value" id="resBalance">—</span>
               </div>
               <div class="result-item result-highlight" id="outOfPocketRow"
                 style="display: none; background-color: #fff0f0; border-color: #ffcccc;">
-                <span class="result-label" style="color: #d93025;">Remaining Balance to Pay to UTP (Out of
-                  Pocket)</span>
+                <span class="result-label" style="color: #d93025;">Amount Of Tuition Fee To Be Borne By Student</span>
                 <span class="result-value" id="resOutOfPocket" style="color: #d93025;">—</span>
               </div>
             </div>

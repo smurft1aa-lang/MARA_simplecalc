@@ -264,13 +264,12 @@ document.querySelectorAll('input[name="maraScholarship"]').forEach((radio) => {
     if (covered) {
       hostelNotice.className = "notice notice-good";
       hostelNotice.innerHTML =
-        "<strong>Hostel fees are covered</strong> under your MARA scholarship. " +
-        "Your hostel accommodation charges will be included in the MARA disbursement.";
+        "<strong>Hostel fees are covered by UTP</strong> " +
+        "for a standard twin-sharing room during the standard duration of your programme "
     } else {
       hostelNotice.className = "notice notice-warn";
       hostelNotice.innerHTML =
-        "<strong>Hostel fees are not covered</strong> under your MARA scholarship. " +
-        "You will need to settle hostel accommodation charges separately.";
+        "<strong>Hostel fees are not covered by MARA</strong> and must be paid separately by the student ";
     }
 
     if (document.getElementById("panel-3").classList.contains("active")) {
@@ -448,8 +447,6 @@ function calculateResults() {
   }
   document.getElementById("resYD").textContent = formatRM(yd);
   document.getElementById("resMaraDuration").textContent = maraPayments + " payment" + (maraPayments !== 1 ? "s" : "");
-  document.getElementById("resDLYD").textContent =
-    dlyd + " payment" + (dlyd !== 1 ? "s" : "");
   document.getElementById("resReceived").textContent =
     received + " payment" + (received !== 1 ? "s" : "");
   document.getElementById("resBalance").textContent =
@@ -553,12 +550,11 @@ function calculateResults() {
     scenarioBox.className = "scenario-box scenario-pending";
     scenarioBox.innerHTML =
       "<h3>Partial Coverage — Payments Pending</h3>" +
-      "<p>Your MARA scholarship covers <strong>" + coveragePercent + "%</strong> of the programme " +
-      "(Lampiran A: " + formatRM(userTotalTuition) + " out of UTP actual: " + formatRM(prog.totalFee) + ").</p>" +
-      "<p style='margin-top:8px;'>You have <strong>" + balance + " remaining payment" + (balance !== 1 ? "s" : "") + "</strong> to receive from MARA.</p>" +
+      "<p>Your MARA sponsorship allocation currently covers " + coveragePercent + "% of your total programme tuition fees.</p>" +
+      "<p style='margin-top:8px;'>You have " + balance + " remaining payment" + (balance !== 1 ? "s" : "") + " to be received from MARA.</p>" +
       (outOfPocketTotal > 0 ?
-        "<p style='margin-top:8px;'>After all MARA payments are received, you will still need to settle <strong>" + formatRM(outOfPocketTotal) + "</strong> out-of-pocket to UTP.</p>" +
-        "<p style='margin-top:8px;font-size:0.85rem;'><em>Please refer to the sidebar for alternative options to cover the shortfall.</em></p>" : "") +
+        "<p style='margin-top:8px;'>Upon full disbursement of the scheduled payments, the student will be required to pay an estimated shortfall of " + formatRM(outOfPocketTotal) + ".</p>" +
+        "<p style='margin-top:8px;'>Please refer to the sidebar for available options to address the funding shortfall.</p>" : "") +
       '<p style="margin-top:8px;font-size:0.82rem;font-style:italic;">*All MARA payments are subject to MARA approval</p>';
 
   } else if (balance > 0 && outOfPocketTotal === 0) {
@@ -629,7 +625,8 @@ btnBack4.addEventListener("click", () => {
     '</div>' +
     '</div>' +
     '<div class="notice notice-good" id="hostelNotice" style="margin-top: 15px;">' +
-    '<strong>Hostel fees are covered</strong> under your MARA scholarship. Your hostel accommodation charges will be included in the MARA disbursement.' +
+    "<strong>Hostel fees are covered by UTP</strong> " +
+    "for a standard twin-sharing room during the standard duration of your programme " +
     '</div>';
 
   // Re-attach radio listeners
@@ -643,14 +640,13 @@ btnBack4.addEventListener("click", () => {
         hostelNoticeEl.className = "notice notice-good";
         hostelNoticeEl.style.marginTop = "15px";
         hostelNoticeEl.innerHTML =
-          "<strong>Hostel fees are covered</strong> under your MARA scholarship. " +
-          "Your hostel accommodation charges will be included in the MARA disbursement.";
+          "<strong>Hostel fees are covered by UTP</strong> " +
+          "for a standard twin-sharing room during the standard duration of your programme "
       } else {
         hostelNoticeEl.className = "notice notice-warn";
         hostelNoticeEl.style.marginTop = "15px";
         hostelNoticeEl.innerHTML =
-          "<strong>Hostel fees are not covered</strong> under your MARA scholarship. " +
-          "You will need to settle hostel accommodation charges separately.";
+          "<strong>Hostel fees are not covered by MARA</strong> and must be paid separately by the student ";
       }
       if (document.getElementById("panel-3").classList.contains("active")) {
         calculateResults();
