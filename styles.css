@@ -1242,10 +1242,15 @@ input[type="number"] {
     order: -1;
   }
 
-  .sidebar-left:has(.radio-group) .sidebar-title,
-  .sidebar-left:has(.radio-group)>p {
-    display: none;
-    /* Hide text to keep it looking like a pure nav bar only when selection is active */
+  .sidebar-left:has(.radio-group) .sidebar-title {
+    text-align: center;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+  }
+  
+  .sidebar-left:has(.radio-group) > p {
+    text-align: center;
+    margin-bottom: 12px !important;
   }
 
   .scroll-list-box {
